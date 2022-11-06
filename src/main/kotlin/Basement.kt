@@ -1,0 +1,150 @@
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatterBuilder
+import java.time.temporal.ChronoUnit
+
+fun main(args: Array<String>) {
+//    val answer = solution1(10)
+//    println(answer.contentToString())
+
+//    val v = arrayOf(intArrayOf(1, 4), intArrayOf(3, 4), intArrayOf(3, 10))
+//    val v = arrayOf(intArrayOf(1, 1), intArrayOf(2, 2), intArrayOf(1, 2))
+//    val answer = solution2(v)
+//    println(answer.contentToString())
+
+//    solution3("010-1212-333")
+
+//    println(solution4("brbabrrara"))
+
+//    println(solution5("2019/12/01 SUN", "2020/03/02", arrayOf("01/02", "12/24", "03/01")))
+
+//    println(solution6(15))
+}
+
+/**
+ * 숫자 입력받고 글자로 다 이어 붙인다음, 해당 번째의 글씨 반환
+ */
+fun solution6(n: Int): Int {
+    var answer: Int = -1
+
+    var temp = ""
+
+    for (i in 0..n) {
+        temp += "$i"
+    }
+
+    println(temp)
+
+    answer = Integer.parseInt(temp[n].toString())
+
+    return answer
+}
+
+/**
+ * 날짜 주어지면 일한 일 수 구하기, 윤년 빼고
+ */
+fun solution5(join_date: String, resign_date: String, holidays: Array<String>): Int {
+    var answer: Int = 0
+
+    val formatter1 = DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("yyyy/MM/dd EEE").toFormatter()
+    val formatter2 = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+
+    val joinDate = LocalDate.parse(join_date, formatter1)
+    val resignDate = LocalDate.parse(resign_date, formatter2)
+
+    val joinDateYear = joinDate.year
+    val resignDateYear = resignDate.year
+
+    val isJoinDateYearIsLunarYear = joinDateYear % 4 == 0 && joinDateYear % 100 != 0 || joinDateYear % 400 == 0
+    val isResignDateYearIsLunarYear = resignDateYear % 4 == 0 && resignDateYear % 100 != 0 || resignDateYear % 400 == 0
+
+    var lunarCnt = 0
+    if (joinDate.monthValue >= 2 && isJoinDateYearIsLunarYear) lunarCnt += 1
+    if (resignDate.monthValue >= 2 && isResignDateYearIsLunarYear) lunarCnt += 1
+
+    val weeks = ChronoUnit.WEEKS.between(joinDate, resignDate).toInt()
+    val weekends = weeks * 2
+    val days = ChronoUnit.DAYS.between(joinDate, resignDate).toInt()
+
+    if (resignDate.equals(joinDate)) {
+        answer = 1
+    } else {
+        answer = days - weekends - holidays.size + lunarCnt
+    }
+
+    return answer
+}
+
+/**
+ * 문자열을 받고 2번째로 많은 단어, 2번째랑 3번째도 같으면 2, 3번째꺼
+ */
+fun solution4(s: String): String {
+    var answer: String = ""
+
+    val map = mutableMapOf<Char, Int>()
+
+    for (c in s) {
+        map.putIfAbsent(c, 0)
+        map[c] = map[c]!! + 1
+    }
+
+    val list = map.toList()
+
+    val sorted = list.sortedBy { it.second }
+
+    answer = when {
+        sorted.size == 1 || sorted.size == 2 -> "-"
+        else -> {
+            var reversed = sorted.reversed()
+
+            if (reversed[0].second == reversed[1].second) {
+                reversed = reversed.drop(1)
+            }
+
+            val removedFirstElement = reversed.drop(1)
+
+            if (removedFirstElement[0].second == removedFirstElement[1].second) {
+                removedFirstElement.map { it.first }.joinToString(separator = "")
+            } else {
+                removedFirstElement.first().first.toString()
+            }
+        }
+    }
+
+    return answer
+}
+
+/**
+ * 스트링을 받아 폰번호 패턴 반환
+ */
+fun solution3(phone_number: String): Int {
+    var answer = 0
+
+    answer = when {
+        phone_number.startsWith("+82") && phone_number.split("-")[1].startsWith("1") -> 3
+        phone_number.contains("-") && phone_number.split("-").size == 3 && phone_number.split("-").last().length == 4 -> 1
+        phone_number.length == 11 -> 2
+        else -> -1
+    }
+
+    return answer
+}
+
+/**
+ * 3개의 배열을 받아 직사각형의 나머지 좌표 찾기
+ */
+fun solution2(v: Array<IntArray>): IntArray {
+    return intArrayOf(
+        v[0][0].xor(v[1][0].xor(v[2][0])),
+        v[0][1].xor(v[1][1].xor(v[2][1]))
+    )
+}
+
+/**
+ * 정수 n 이 주어질 때 정수를 순서대로 담은 배열
+ */
+fun solution1(n: Int): IntArray {
+    val answer = IntArray(n) { it + 1 }
+
+    return answer
+}
