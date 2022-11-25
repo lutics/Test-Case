@@ -4,6 +4,14 @@ import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoUnit
 
 fun main(args: Array<String>) {
+//    val answer = solution(intArrayOf(2, 6, 8, 5))
+//    val answer = solution(intArrayOf(1, 1))
+//    val answer = solution(intArrayOf(1, 5, 5, 2, 6))
+//    println(answer)
+
+//    val answer = solution("123-adb-123")
+//    println(answer)
+
 //    val answer = solution1(10)
 //    println(answer.contentToString())
 
@@ -20,6 +28,82 @@ fun main(args: Array<String>) {
 
 //    println(solution6(15))
 }
+
+/**
+ * IntArray 받고 어떤 위치에서 출발했던 가장 멀리 잡을 수 있는 길이 (실패)
+ */
+fun solution(blocks: IntArray): Int {
+    // write your code in Kotlin 1.6.0 (Linux)
+    var answer = 0
+
+    blocks.forEachIndexed { index, i ->
+        // Init Position
+        var minIdx = i
+        var maxIdx = i
+
+        // lIdx
+        for (lPosition in index downTo 0) {
+            if (lPosition - 1 >= 0) {
+                val prevValue = blocks[lPosition - 1]
+                if (minIdx >= prevValue) {
+                    minIdx = prevValue
+                } else {
+                    break
+                }
+            }
+        }
+
+        // rIdx
+        for (rPosition in index until blocks.size) {
+            if (rPosition + 1 < blocks.size) {
+                val nextValue = blocks[rPosition + 1]
+                if (maxIdx <= nextValue) {
+                    maxIdx = nextValue
+                } else {
+                    break
+                }
+            }
+        }
+
+        val lIdx = blocks.indexOf(minIdx)
+        val rIdx = blocks.indexOf(maxIdx)
+
+        val range = blocks.copyOfRange(lIdx, rIdx)
+
+        val result = range.size
+
+        if (answer < result) {
+            answer = result
+        }
+    }
+
+    return answer
+}
+
+/**
+ * 스트링 받고 3-3-3 자의 숫자만 포함되어 있는지
+ */
+//fun solution(S: String): Boolean {
+//    // write your code in Kotlin 1.6.0 (Linux)
+//
+//    val regex = "\\d{3}[-\\]]\\d{3}[-\\]]\\d{3}".toRegex()
+//
+//    return S.matches(regex)
+//}
+
+/**
+ * 폰넘버 받고 주소록에 들어 있는지 찾기, 없으면 그대로 번호 반환
+ */
+//fun solution(phone_numbers: Array<String>, phone_owners: Array<String>, number: String): String {
+//    // write your code in Kotlin 1.6.0 (Linux)
+//
+//    val idx = phone_numbers.indexOf(number)
+//    if (idx != -1) {
+//        return phone_owners[idx]
+//    } else {
+//        return number
+//    }
+//}
 
 /**
  * 숫자 입력받고 글자로 다 이어 붙인다음, 해당 번째의 글씨 반환
