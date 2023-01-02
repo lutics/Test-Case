@@ -2,6 +2,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoUnit
+import kotlin.math.abs
 
 fun main(args: Array<String>) {
 //    val answer = solution(intArrayOf(2, 6, 8, 5))
@@ -27,58 +28,168 @@ fun main(args: Array<String>) {
 //    println(solution5("2019/12/01 SUN", "2020/03/02", arrayOf("01/02", "12/24", "03/01")))
 
 //    println(solution6(15))
+
+//    solution("AyA", "AxA")
+
+//    val board = arrayOf(intArrayOf(1, -7, -2, 1, -1), intArrayOf(2, 3, 0, -1, -2), intArrayOf(1, -1, 6, -1, -2), intArrayOf(-1, 1, -2, 0, 4), intArrayOf(-10, 5, -3, -1, 1))
+    val board = arrayOf(intArrayOf(-10, 20, 30), intArrayOf(-10, 0, 10), intArrayOf(-20, 40, 1))
+    solution(board)
 }
+
+/**
+ *
+ */
+fun solution(board: Array<IntArray>): Int {
+    var answer: Int = 0
+
+    var y = 0
+    var x = 0
+
+    while (y < board.size && x < board.size) {
+        val current = board[y][x]
+
+        if (current == 0) {
+            answer = abs(answer)
+        } else {
+            answer += current
+        }
+
+        println("$y, $x, ${current}, $answer")
+
+        val right = board[y][x + 1]
+        val down = board[y + 1][x]
+
+        val whenMoveRight = abs(answer + right)
+        val whenMoveDown = abs(answer + down)
+
+        if (whenMoveDown > whenMoveRight) {
+            y += 1
+        } else {
+            x += 1
+        }
+    }
+
+    println(answer)
+
+    return answer
+}
+
+//fun solution(numbers: IntArray): Int {
+//    var answer = -1
+//
+//    val sorted = numbers.sorted()
+//
+//    var converted: List<Int> = if (sorted.size > 2) {
+//        val temp = IntArray(sorted.size / 2)
+//
+//        for (i in 0 until sorted.size / 2) {
+//            val a = sorted[i]
+//            val b = sorted[sorted.lastIndex - i]
+//
+//            temp[i] = a + b
+//        }
+//
+//        temp.toList()
+//    } else {
+//        sorted
+//    }
+//
+//    var sum = 0
+//    for (i in 0..converted.size) {
+//        if (i + 1 < converted.size) {
+//            val gap = abs(converted[i] - converted[i + 1])
+//
+//            sum += gap
+//        }
+//    }
+//
+//    answer = sum
+//
+//    return answer
+//}
+
+/**
+ *
+ */
+//fun solution(s1: String, s2: String): String {
+//    var s1Result = ""
+//    var s2Result = ""
+//
+//    for (i in 1 until s1.length) {
+//        val delimiter = s1.takeLast(i)
+//
+//        if (s2.startsWith(delimiter)) {
+//            s1Result = s1.dropLast(i) + s2
+//        }
+//    }
+//
+//    for (i in 1 until s2.length) {
+//        val delimiter = s2.takeLast(i)
+//
+//        if (s1.startsWith(delimiter)) {
+//            s2Result = s2.dropLast(i) + s1
+//        }
+//    }
+//
+//    val answer = when {
+//        s1Result.length == s2Result.length -> if (s1Result.compareTo(s2Result) < 0) s1Result else s2Result
+//        s1Result.length < s2Result.length -> s1Result
+//        else -> s2Result
+//    }
+//
+//    return answer
+//}
 
 /**
  * IntArray 받고 어떤 위치에서 출발했던 가장 멀리 잡을 수 있는 길이 (실패)
  */
-fun solution(blocks: IntArray): Int {
-    // write your code in Kotlin 1.6.0 (Linux)
-    var answer = 0
-
-    blocks.forEachIndexed { index, i ->
-        // Init Position
-        var minIdx = i
-        var maxIdx = i
-
-        // lIdx
-        for (lPosition in index downTo 0) {
-            if (lPosition - 1 >= 0) {
-                val prevValue = blocks[lPosition - 1]
-                if (minIdx >= prevValue) {
-                    minIdx = prevValue
-                } else {
-                    break
-                }
-            }
-        }
-
-        // rIdx
-        for (rPosition in index until blocks.size) {
-            if (rPosition + 1 < blocks.size) {
-                val nextValue = blocks[rPosition + 1]
-                if (maxIdx <= nextValue) {
-                    maxIdx = nextValue
-                } else {
-                    break
-                }
-            }
-        }
-
-        val lIdx = blocks.indexOf(minIdx)
-        val rIdx = blocks.indexOf(maxIdx)
-
-        val range = blocks.copyOfRange(lIdx, rIdx)
-
-        val result = range.size
-
-        if (answer < result) {
-            answer = result
-        }
-    }
-
-    return answer
-}
+//fun solution(blocks: IntArray): Int {
+//    // write your code in Kotlin 1.6.0 (Linux)
+//    var answer = 0
+//
+//    blocks.forEachIndexed { index, i ->
+//        // Init Position
+//        var minIdx = i
+//        var maxIdx = i
+//
+//        // lIdx
+//        for (lPosition in index downTo 0) {
+//            if (lPosition - 1 >= 0) {
+//                val prevValue = blocks[lPosition - 1]
+//                if (minIdx >= prevValue) {
+//                    minIdx = prevValue
+//                } else {
+//                    break
+//                }
+//            }
+//        }
+//
+//        // rIdx
+//        for (rPosition in index until blocks.size) {
+//            if (rPosition + 1 < blocks.size) {
+//                val nextValue = blocks[rPosition + 1]
+//                if (maxIdx <= nextValue) {
+//                    maxIdx = nextValue
+//                } else {
+//                    break
+//                }
+//            }
+//        }
+//
+//        val lIdx = blocks.indexOf(minIdx)
+//        val rIdx = blocks.indexOf(maxIdx)
+//
+//        val range = blocks.copyOfRange(lIdx, rIdx)
+//
+//        val result = range.size
+//
+//        if (answer < result) {
+//            answer = result
+//        }
+//    }
+//
+//    return answer
+//}
 
 /**
  * 스트링 받고 3-3-3 자의 숫자만 포함되어 있는지
